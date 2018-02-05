@@ -1,0 +1,21 @@
+---
+title: "Males and health expenditure"
+output: html_notebook
+---
+
+Male Age and Spouse
+
+```{r}
+TotalExpenditure_agemalespousesplit_means_svyby<-as.data.frame(svyby(~TOTEXP, by=~SIXTYFIVEPLUS+SPOUIN_fac, design=subset(mepsdsgn,SEX_fac=="Male" & SPOUIN_fac!="Under 16 NA"), FUN = svymean))
+
+print(TotalExpenditure_agemalespousesplit_means_svyby)
+```
+
+
+Graph
+
+```{r}
+plot_totexpSpouseAgeMale_w<-ggplot(TotalExpenditure_agemalespousesplit_means_svyby[1:2,c(1,3:4)], aes(x=SIXTYFIVEPLUS,group = 1))
+plot_totexpSpouseAgeMale_w+geom_ribbon(aes(fill = "Spouse",ymin = TOTEXP - se, ymax = TOTEXP + se),alpha=0.5) + geom_line(aes(color="Spouse",y = TOTEXP))+geom_ribbon(data=TotalExpenditure_agemalespousesplit_means_svyby[3:4,c(1,3:4)],aes(fill = "No Spouse",ymin = TOTEXP - se, ymax = TOTEXP + se),alpha=0.5) + geom_line(data=TotalExpenditure_agemalespousesplit_means_svyby[3:4,c(1,3:4)],aes(color="No Spouse",y = TOTEXP)) + labs(x="Marital status",y="Mean total expenditure",title="Males mean total expenses by spouse and age")+theme(plot.title = element_text(hjust = 0.5))+guides(color=FALSE,fill=guide_legend(title="Age group"))
+```
+
